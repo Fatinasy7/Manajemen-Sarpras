@@ -110,11 +110,11 @@ Jalankan perintah berikut satu per satu:
 
 ```powershell
 php artisan key:generate
-php artisan optimize:clear
 php artisan migrate --seed
 ```
 
 Perintah migrasi membuat tabel database yang dibutuhkan. Opsi `--seed` juga menjalankan data awal proyek, termasuk pengguna pengujian yang disediakan oleh seeder.
+Jangan jalankan `php artisan optimize:clear` sebelum MySQL menyala dan migrasi selesai: pengaturan cache proyek menggunakan database, sehingga perintah tersebut memerlukan koneksi dan tabel database.
 
 > **Peringatan:** Jangan menjalankan `php artisan migrate:fresh` pada database yang berisi data penting. Perintah tersebut menghapus semua tabel sebelum membuat ulang.
 
@@ -156,7 +156,7 @@ cd C:\laragon\www\Manajemen-Sarpras
 php artisan serve --host=127.0.0.1 --port=8000
 ```
 
-Kemudian buka `http://127.0.0.1:8000`. Biarkan terminal server tetap berjalan dan hentikan dengan `Ctrl+C` setelah selesai. Jika menggunakan cara ini, sesuaikan `APP_URL` di `.env` menjadi `http://127.0.0.1:8000`, lalu jalankan `php artisan optimize:clear`.
+Kemudian buka `http://127.0.0.1:8000`. Biarkan terminal server tetap berjalan dan hentikan dengan `Ctrl+C` setelah selesai. Jika menggunakan cara ini, sesuaikan `APP_URL` di `.env` menjadi `http://127.0.0.1:8000`. Setelah MySQL aktif dan migrasi selesai, jalankan `php artisan optimize:clear` jika perlu membersihkan cache konfigurasi.
 
 ## 10. Menjalankan proyek pada hari berikutnya
 
@@ -175,8 +175,8 @@ Tidak perlu mengulangi `composer install`, `npm install`, atau migrasi setiap ka
 |---|---|
 | `php` tidak ditemukan atau versinya salah | Pilih PHP 8.4.1 atau lebih baru di Laragon, buka terminal Laragon baru, lalu jalankan `php -v`. |
 | Composer menyatakan versi PHP tidak cocok | Pastikan terminal memakai PHP 8.4.1 atau lebih baru sebelum menjalankan `composer install` atau Artisan. |
-| `SQLSTATE` atau koneksi MySQL gagal | Pastikan MySQL aktif, database `manajemen_sarpras` sudah dibuat, dan konfigurasi `DB_*` di `.env` benar. |
+| `SQLSTATE[HY000] [2002]` atau koneksi MySQL ditolak | Klik **Start All** di Laragon dan pastikan layanan MySQL menyala. Cocokkan `DB_HOST` dan `DB_PORT` di `.env` dengan port MySQL Laragon (biasanya `127.0.0.1:3306`), lalu pastikan `DB_DATABASE` sama persis dengan nama database yang sudah dibuat. |
 | Alamat `.test` tidak terbuka | Pastikan proyek berada di `C:\laragon\www`, Auto Virtual Hosts aktif, Apache aktif, dan Laragon sudah di-Reload. |
 | Halaman menampilkan error Vite atau manifest tidak ditemukan | Jalankan `npm install` lalu `npm run build`, atau jalankan `npm run dev` selama pengembangan. |
-| Perubahan `.env` sepertinya tidak terbaca | Jalankan `php artisan optimize:clear`, lalu muat ulang halaman. |
+| Perubahan `.env` sepertinya tidak terbaca | Pastikan MySQL aktif dan migrasi sudah dijalankan, lalu jalankan `php artisan optimize:clear` dan muat ulang halaman. |
 | Halaman menampilkan error setelah perubahan database | Periksa pesan error dan migrasi yang tersedia. Jangan memakai `migrate:fresh` jika database berisi data yang ingin dipertahankan. |
